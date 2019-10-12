@@ -20,6 +20,10 @@ project "WinTUI"
         "%{prj.location}/src/**.cpp"
     }
 
+    defines {
+        "WTUI_ALLOW_MENU_LOOP"
+    }
+
     includedirs {
         "%{prj.location}/src",
     }

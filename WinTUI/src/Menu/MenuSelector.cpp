@@ -33,11 +33,32 @@ namespace WinTUI {
             }
 
             switch (Keyboard::WaitForKey()) {
+            case WTUI_UP_ARROW:
+                if ((--selectedIndex) < 0) {
+#ifdef WTUI_ALLOW_MENU_LOOP
+                    selectedIndex += m_OptionCount;
+#else
+                    selectedIndex = 0;
+#endif
+                }
+                break;
 
+            case WTUI_DOWN_ARROW:
+#ifdef WTUI_ALLOW_MENU_LOOP
+                ++selectedIndex %= m_OptionCount;
+#else
+                if (++selectedIndex >= m_OptionCount) {
+                    selectedIndex = m_OptionCount - 1;
+                }
+#endif
+                break;
 
-                // If up, decrease indx
-                // If down increase indx
-                // If Enter, choosing = false
+            case WTUI_RETURN:
+                choosing = false;
+                break;
+
+            default:
+                break;
             }
         }
 

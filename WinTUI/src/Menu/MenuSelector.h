@@ -12,7 +12,7 @@ namespace WinTUI {
     class MenuSelector {
     public:
 
-        MenuSelector(std::string menuOptionArray[], unsigned int optionArraySize)
+        MenuSelector(std::string menuOptionArray[], int optionArraySize)
             : m_MenuOptions(menuOptionArray), m_OptionCount(optionArraySize) {}
 
         ~MenuSelector() {
@@ -23,7 +23,7 @@ namespace WinTUI {
 
     private:
         std::string* m_MenuOptions;
-        const unsigned int m_OptionCount;
+        const int m_OptionCount;
     };
 
 }
