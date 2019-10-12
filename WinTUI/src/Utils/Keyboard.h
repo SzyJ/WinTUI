@@ -1,24 +1,21 @@
 #pragma once
 #include <Windows.h>
 
-namespace WinTUI {
+namespace WinTUI::Keyboard {
 
-    class Keyboard {
-    public:
-        static unsigned int WaitForKey() {
-            HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
-            DWORD NumInputs = 0;
-            DWORD InputsRead = 0;
-            bool running = true;
+    inline unsigned int WaitForKey() {
+        HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
+        DWORD NumInputs = 0;
+        DWORD InputsRead = 0;
+        bool running = true;
 
-            INPUT_RECORD irInput;
+        INPUT_RECORD irInput;
 
-            GetNumberOfConsoleInputEvents(hInput, &NumInputs);
+        GetNumberOfConsoleInputEvents(hInput, &NumInputs);
 
-            ReadConsoleInput(hInput, &irInput, 1, &InputsRead);
+        ReadConsoleInput(hInput, &irInput, 1, &InputsRead);
 
-            return irInput.Event.KeyEvent.wVirtualKeyCode;
-        }
-    };
+        return irInput.Event.KeyEvent.wVirtualKeyCode;
+    }
 
 }
