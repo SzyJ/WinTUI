@@ -21,7 +21,7 @@ project "WinTUI"
     }
 
     includedirs {
-        "%{wks.location}/src",
+        "%{prj.location}/src",
     }
 
     filter {"system:windows", "configurations:Release"}
