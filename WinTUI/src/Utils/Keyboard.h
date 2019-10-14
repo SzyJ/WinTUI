@@ -5,7 +5,6 @@
 // Date: 14/10/2019
 
 #pragma once
-#include <Windows.h>
 #include <conio.h>
 
 #define WTUI_ARROW_KEYS 224

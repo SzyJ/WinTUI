@@ -11,13 +11,6 @@
 void Test(std::ostream& stream);
 
 int main() {
-
-    std::cout << "Hello";
-
-    unsigned int keycode = WinTUI::Keyboard::WaitForKey();
-
-    std::cout << " World: " << keycode << std::endl;
-
     const char* array[] = {
         "First entry",
         "Second entry",
@@ -25,6 +18,14 @@ int main() {
     };
 
     WinTUI::MenuSelector menu(array, 3);
+
+    menu.SetSelectedBefore([]() {
+        WinTUI::Color::SetConsoleColor(WTUI_DARK_BLUE, WTUI_LIGHT_YELLOW);
+    });
+    menu.SetSelectedAfter([]() {
+        WinTUI::Color::ResetConsoleColor();
+    });
+
     std::cout << menu;
     std::cout << "Chose: " << array[menu.GetLastSelected()] << std::endl;
 

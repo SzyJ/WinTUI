@@ -6,6 +6,7 @@
 
 #pragma once
 #include <ostream>
+#include <functional>
 #include "Utils/Console.h"
 #include "Utils/Keyboard.h"
 #include "Utils/Keycodes.h"
@@ -40,12 +41,22 @@ namespace WinTUI {
 
         inline int GetLastSelected() { return m_LastSelected; }
 
+        inline void SetSelectedBefore(const std::function<void(void)>& lambda) { m_SelectedBefore = lambda; }
+        inline void SetSelectedAfter(const std::function<void(void)>& lambda) { m_SelectedAfter = lambda; }
+        inline void SetUnselectedBefore(const std::function<void(void)>& lambda) { m_UnselectedBefore = lambda; }
+        inline void SetUnselectedAfter(const std::function<void(void)>& lambda) { m_UnselectedAfter = lambda; }
+
         inline friend std::ostream& operator<<(std::ostream& ostream, MenuSelector& menu);
 
     private:
         const char** m_MenuOptions;
         int m_OptionCount;
         int m_LastSelected;
+
+        std::function<void(void)> m_SelectedBefore;
+        std::function<void(void)> m_SelectedAfter;
+        std::function<void(void)> m_UnselectedBefore;
+        std::function<void(void)> m_UnselectedAfter;
 
     };
 
@@ -58,14 +69,23 @@ namespace WinTUI {
 
             for (int index = 0; index < menu.m_OptionCount; ++index) {
                 if (index == selectedIndex) {
-                    Color::SetConsoleColor(WTUI_GOLD, WTUI_LIGHT_BLUE);
+                    if (menu.m_SelectedBefore) {
+                        menu.m_SelectedBefore();
+                    }
+                    ostream << menu.m_MenuOptions[index];
+                    if (menu.m_SelectedAfter) {
+                        menu.m_SelectedAfter();
+                    }
                 } else {
-                    Color::ResetConsoleColor();
+                    if (menu.m_UnselectedBefore) {
+                        menu.m_UnselectedBefore();
+                    }
+                    ostream << menu.m_MenuOptions[index];
+                    if (menu.m_UnselectedAfter) {
+                        menu.m_UnselectedAfter();
+                    }
                 }
 
-                ostream << menu.m_MenuOptions[index];
-
-                Color::ResetConsoleColor();
                 ostream << std::endl;
 
             }
