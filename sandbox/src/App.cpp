@@ -25,9 +25,8 @@ int main() {
     };
 
     WinTUI::MenuSelector menu(array, 3);
-    //std::cout << menu;
+    std::cout << menu;
+    std::cout << "Chose: " << array[menu.GetLastSelected()] << std::endl;
 
-
-    system("pause");
     return 0;
 }

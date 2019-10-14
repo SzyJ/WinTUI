@@ -6,22 +6,20 @@
 
 #pragma once
 #include <Windows.h>
+#include <conio.h>
+
+#define WTUI_ARROW_KEYS 224
 
 namespace WinTUI::Keyboard {
 
     inline unsigned int WaitForKey() {
-        HANDLE hInput = GetStdHandle(STD_INPUT_HANDLE);
-        DWORD NumInputs = 0;
-        DWORD InputsRead = 0;
-        bool running = true;
+        int test = _getch();
+        if (test != WTUI_ARROW_KEYS) {
+            return test;
+        }
 
-        INPUT_RECORD irInput;
-
-        GetNumberOfConsoleInputEvents(hInput, &NumInputs);
-
-        ReadConsoleInput(hInput, &irInput, 1, &InputsRead);
-
-        return irInput.Event.KeyEvent.wVirtualKeyCode;
+        test = _getch();
+        return test;
     }
 
 }

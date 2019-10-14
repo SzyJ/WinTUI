@@ -9,20 +9,20 @@
 #include "Utils/Console.h"
 #include "Utils/Keyboard.h"
 #include "Utils/Keycodes.h"
-#include "Utils/Colour.h"
+#include "Utils/Color.h"
 
 namespace WinTUI {
 
     class MenuSelector {
     public:
-
         MenuSelector()
-            : m_MenuOptions(nullptr), m_OptionCount(0) {}
+            : m_MenuOptions(nullptr), m_OptionCount(0), m_LastSelected(-1) {}
 
         MenuSelector(const char** menuOptionArray, int optionArraySize)
-            : m_MenuOptions(menuOptionArray), m_OptionCount(optionArraySize) {}
+            : m_MenuOptions(menuOptionArray), m_OptionCount(optionArraySize), m_LastSelected(-1) {}
 
         MenuSelector(const MenuSelector& copy) {
+            m_LastSelected = copy.m_LastSelected;
             m_OptionCount = copy.m_OptionCount;
             m_MenuOptions = new const char*[m_OptionCount];
 
@@ -38,15 +38,18 @@ namespace WinTUI {
             m_OptionCount = optionArraySize;
         }
 
-        inline friend std::ostream& operator<<(std::ostream& ostream, const MenuSelector& menu);
+        inline int GetLastSelected() { return m_LastSelected; }
+
+        inline friend std::ostream& operator<<(std::ostream& ostream, MenuSelector& menu);
 
     private:
         const char** m_MenuOptions;
         int m_OptionCount;
+        int m_LastSelected;
 
     };
 
-    std::ostream& operator<<(std::ostream& ostream, const WinTUI::MenuSelector& menu) {
+    std::ostream& operator<<(std::ostream& ostream, WinTUI::MenuSelector& menu) {
         bool choosing = true;
         int selectedIndex = 0;
 
@@ -66,8 +69,13 @@ namespace WinTUI {
                 ostream << std::endl;
 
             }
+            int c = Keyboard::WaitForKey();
+            switch (c) {
+            case WTUI_RETURN:
+            case WTUI_SPACE:
+                choosing = false;
+                break;
 
-            switch (Keyboard::WaitForKey()) {
             case WTUI_UP_ARROW:
                 if ((--selectedIndex) < 0) {
 #ifdef WTUI_ALLOW_MENU_LOOP
@@ -88,15 +96,12 @@ namespace WinTUI {
 #endif
                 break;
 
-            case WTUI_RETURN:
-            case WTUI_SPACE:
-                choosing = false;
-                break;
-
             default:
                 break;
             }
         }
+
+        menu.m_LastSelected = selectedIndex;
 
         return ostream;
     }
