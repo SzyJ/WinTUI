@@ -19,12 +19,21 @@ int main() {
 
     WinTUI::MenuSelector menu(array, 3);
 
-    menu.SetSelectedBefore([]() {
+    menu.SetSelectedBefore([](std::ostream& ostream) {
+        ostream << "-> ";
+
         WinTUI::Color::SetConsoleColor(WTUI_DARK_BLUE, WTUI_LIGHT_YELLOW);
     });
-    menu.SetSelectedAfter([]() {
+    menu.SetSelectedAfter([](std::ostream& ostream) {
         WinTUI::Color::ResetConsoleColor();
+        ostream << " <-";
     });
+    menu.SetUnselectedBefore([](std::ostream& ostream) {
+        ostream << "   ";
+    });
+    menu.SetUnselectedAfter([](std::ostream& ostream) {
+        ostream << "   ";
+        });
 
     std::cout << menu;
     std::cout << "Chose: " << array[menu.GetLastSelected()] << std::endl;
