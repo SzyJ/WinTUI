@@ -1,3 +1,9 @@
+// Author: Szymon Jackiewicz
+// 
+// Project: WinTUI
+// File: Keycodes.h
+// Date: 14/10/2019
+
 #pragma once
 
 #define WTUI_UP_ARROW 38

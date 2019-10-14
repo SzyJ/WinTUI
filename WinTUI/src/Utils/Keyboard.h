@@ -1,3 +1,9 @@
+// Author: Szymon Jackiewicz
+// 
+// Project: WinTUI
+// File: Keyboard.h
+// Date: 14/10/2019
+
 #pragma once
 #include <Windows.h>
 

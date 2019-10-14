@@ -1,15 +1,20 @@
+// Author: Szymon Jackiewicz
+// 
+// Project: WinTUI
+// File: Console.h
+// Date: 14/10/2019
+
 #pragma once
 #include <Windows.h>
 
 namespace WinTUI::Console {
 
-    inline void ClearScreen()
-    {
-        HANDLE                     hStdOut;
+    inline void ClearScreen() {
+        HANDLE hStdOut;
         CONSOLE_SCREEN_BUFFER_INFO csbi;
-        DWORD                      count;
-        DWORD                      cellCount;
-        COORD                      homeCoords = { 0, 0 };
+        DWORD count;
+        DWORD cellCount;
+        COORD homeCoords = {0, 0};
 
         hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
         if (hStdOut == INVALID_HANDLE_VALUE) return;
@@ -21,11 +26,12 @@ namespace WinTUI::Console {
         /* Fill the entire buffer with spaces */
         if (!FillConsoleOutputCharacter(
             hStdOut,
-            (TCHAR)' ',
+            (TCHAR) ' ',
             cellCount,
             homeCoords,
             &count
-        )) return;
+        ))
+            return;
 
         /* Fill the entire buffer with the current colors and attributes */
         if (!FillConsoleOutputAttribute(
@@ -34,7 +40,8 @@ namespace WinTUI::Console {
             cellCount,
             homeCoords,
             &count
-        )) return;
+        ))
+            return;
 
         /* Move the cursor home */
         SetConsoleCursorPosition(hStdOut, homeCoords);
