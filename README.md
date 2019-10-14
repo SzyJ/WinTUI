@@ -2,7 +2,7 @@
 Keyboard controlled UI elements for the Windows terminal.
 
 ## Example Usage
-![](Images/SelectionMenu.png | width=100)
+![Menu_Selector](Images/SelectionMenu.png)
 
 ```
 const char* array[] = {
