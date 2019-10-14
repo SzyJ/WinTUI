@@ -12,13 +12,13 @@
 namespace WinTUI::Keyboard {
 
     inline unsigned int WaitForKey() {
-        int test = _getch();
-        if (test != WTUI_ARROW_KEYS) {
-            return test;
+        int keycode = _getch();
+        if (keycode != WTUI_ARROW_KEYS) {
+            return keycode;
         }
 
-        test = _getch();
-        return test;
+        keycode = _getch();
+        return keycode;
     }
 
 }

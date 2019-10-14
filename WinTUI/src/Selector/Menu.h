@@ -1,12 +1,11 @@
 // Author: Szymon Jackiewicz
 // 
 // Project: WinTUI
-// File: MenuSelector.h
+// File: Menu.h
 // Date: 14/10/2019
 
 #pragma once
-#include <ostream>
-#include <functional>
+#include "Base/Selector.h"
 #include "Utils/Console.h"
 #include "Utils/Keyboard.h"
 #include "Utils/Keycodes.h"
@@ -14,15 +13,15 @@
 
 namespace WinTUI {
 
-    class MenuSelector {
+    class Menu : public Selector {
     public:
-        MenuSelector()
+        Menu()
             : m_MenuOptions(nullptr), m_OptionCount(0), m_LastSelected(-1) {}
 
-        MenuSelector(const char** menuOptionArray, int optionArraySize)
+        Menu(const char** menuOptionArray, int optionArraySize)
             : m_MenuOptions(menuOptionArray), m_OptionCount(optionArraySize), m_LastSelected(-1) {}
 
-        MenuSelector(const MenuSelector& copy) {
+        Menu(const Menu& copy) {
             m_LastSelected = copy.m_LastSelected;
             m_OptionCount = copy.m_OptionCount;
             m_MenuOptions = new const char*[m_OptionCount];
@@ -32,7 +31,7 @@ namespace WinTUI {
             }
         }
 
-        ~MenuSelector() {}
+        ~Menu() {}
 
         void SetOptions(const char** menuOptionArray, int optionArraySize) {
             m_MenuOptions = menuOptionArray;
@@ -41,22 +40,12 @@ namespace WinTUI {
 
         inline int GetLastSelected() { return m_LastSelected; }
 
-        inline void SetSelectedBefore(const std::function<void(std::ostream&)>& lambda) { m_SelectedBefore = lambda; }
-        inline void SetSelectedAfter(const std::function<void(std::ostream&)>& lambda) { m_SelectedAfter = lambda; }
-        inline void SetUnselectedBefore(const std::function<void(std::ostream&)>& lambda) { m_UnselectedBefore = lambda; }
-        inline void SetUnselectedAfter(const std::function<void(std::ostream&)>& lambda) { m_UnselectedAfter = lambda; }
-
-        inline friend std::ostream& operator<<(std::ostream& ostream, MenuSelector& menu);
+        inline friend std::ostream& operator<<(std::ostream& ostream, Menu& menu);
 
     private:
         const char** m_MenuOptions;
         int m_OptionCount;
         int m_LastSelected;
-
-        std::function<void(std::ostream& ostream)> m_SelectedBefore = NULL;
-        std::function<void(std::ostream& ostream)> m_SelectedAfter = NULL;
-        std::function<void(std::ostream& ostream)> m_UnselectedBefore = NULL;
-        std::function<void(std::ostream& ostream)> m_UnselectedAfter = NULL;
 
         inline void PrintOptions(std::ostream& ostream, int selectedIndex) const {
             for (int index = 0; index < m_OptionCount; ++index) {
@@ -83,9 +72,40 @@ namespace WinTUI {
             }
         }
 
+        inline bool GetKeyInput(int& selectedIndex) {
+            switch (Keyboard::WaitForKey()) {
+            case WTUI_RETURN:
+            case WTUI_SPACE:
+                return false;
+
+            case WTUI_UP_ARROW:
+                if ((--selectedIndex) < 0) {
+#ifdef WTUI_ALLOW_MENU_LOOP
+                    selectedIndex += m_OptionCount;
+#else
+                    selectedIndex = 0;
+#endif
+                }
+                return true;
+
+            case WTUI_DOWN_ARROW:
+#ifdef WTUI_ALLOW_MENU_LOOP
+                ++selectedIndex %= m_OptionCount;
+#else
+                if (++selectedIndex >= m_OptionCount) {
+                    selectedIndex = m_OptionCount - 1;
+                }
+#endif
+                return true;
+
+            default:
+                return true;
+            }
+        }
+
     };
 
-    std::ostream& operator<<(std::ostream& ostream, WinTUI::MenuSelector& menu) {
+    std::ostream& operator<<(std::ostream& ostream, WinTUI::Menu& menu) {
         bool choosing = true;
         int selectedIndex = 0;
 
@@ -93,36 +113,7 @@ namespace WinTUI {
             Console::ClearScreen();
 
             menu.PrintOptions(ostream, selectedIndex);
-            
-            switch (Keyboard::WaitForKey()) {
-            case WTUI_RETURN:
-            case WTUI_SPACE:
-                choosing = false;
-                break;
-
-            case WTUI_UP_ARROW:
-                if ((--selectedIndex) < 0) {
-#ifdef WTUI_ALLOW_MENU_LOOP
-                    selectedIndex += menu.m_OptionCount;
-#else
-                    selectedIndex = 0;
-#endif
-                }
-                break;
-
-            case WTUI_DOWN_ARROW:
-#ifdef WTUI_ALLOW_MENU_LOOP
-                ++selectedIndex %= menu.m_OptionCount;
-#else
-                if (++selectedIndex >= menu.m_OptionCount) {
-                    selectedIndex = menu.m_OptionCount - 1;
-                }
-#endif
-                break;
-
-            default:
-                break;
-            }
+            choosing = menu.GetKeyInput(selectedIndex);
         }
 
         menu.m_LastSelected = selectedIndex;
