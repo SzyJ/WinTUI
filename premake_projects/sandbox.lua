@@ -24,6 +24,10 @@ project "sandbox"
         "%{wks.location}/WinTUI/src",
     }
 
+    defines {
+        "WTUI_ALLOW_MENU_LOOP"
+    }
+
     links {
         "WinTUI"
     }
