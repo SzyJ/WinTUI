@@ -7,16 +7,19 @@
 #include <iostream>
 #include <Selector/Menu.h>
 #include <Builder/Matrix.h>
+#include <Selector/Prompt.h>
 #include "Utils/Keyboard.h"
 
 void ShowMenu();
-void BuildMatix();
+void BuildMatrix();
+void ShowPrompt();
 
 int main() {
 
     //std::cout << WinTUI::Keyboard::WaitForKey() << std::endl;
     //ShowMenu();
-    BuildMatix();
+    //BuildMatrix();
+    ShowPrompt();
 
     return 0;
 }
@@ -50,7 +53,7 @@ void ShowMenu() {
     std::cout << "Chosen Item: " << array[menu.GetLastSelected()] << std::endl;
 }
 
-void BuildMatix() {
+void BuildMatrix() {
     WinTUI::Matrix<int> matrix(5, 5);
 
     matrix.SetSelectedBefore([](std::ostream& ostream) {
@@ -61,4 +64,21 @@ void BuildMatix() {
         });
 
     std::cout << matrix;
+}
+
+void ShowPrompt() {
+    WinTUI::Prompt prompt("Type something");
+
+    prompt.SetSelectedBefore([](std::ostream& ostream) {
+        WinTUI::Color::SetConsoleColor(WTUI_LIGHT_GREEN, WTUI_DARK_GRAY);
+        });
+    prompt.SetSelectedAfter([](std::ostream& ostream) {
+        WinTUI::Color::ResetConsoleColor();
+        ostream << ": ";
+        });
+
+    std::cout << prompt;
+
+    std::cout << prompt.GetLastResponse();
+
 }
