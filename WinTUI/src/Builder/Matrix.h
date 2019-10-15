@@ -52,25 +52,16 @@ namespace WinTUI {
         }
 
         void PrintMatrix(std::ostream& ostream, const int selectedX, const int selectedY) {
-            
             for (int yPos = 0; yPos < m_Height; ++yPos) {
                 for (int xPos = 0; xPos < m_Width; ++xPos) {
                     if (selectedX == xPos && selectedY == yPos) {
-                        if (m_SelectedBefore) {
-                            m_SelectedBefore(ostream);
-                        }
+                        BeforeSelected(ostream);
                         PrintCell(ostream, xPos, yPos);
-                        if (m_SelectedAfter) {
-                            m_SelectedAfter(ostream);
-                        }
+                        AfterSelected(ostream);
                     } else {
-                        if (m_UnselectedBefore) {
-                            m_UnselectedBefore(ostream);
-                        }
+                        BeforeUnselected(ostream);
                         PrintCell(ostream, xPos, yPos);
-                        if (m_UnselectedAfter) {
-                            m_UnselectedAfter(ostream);
-                        }
+                        AfterUnselected(ostream);
                     }
 
                     ostream << WTUI_COLUMN_SEPERATOR;
@@ -81,9 +72,13 @@ namespace WinTUI {
 
         inline bool GetKeyInput(int& selectedX, int& selectedY) {
             switch (Keyboard::WaitForKey()) {
+            case WTUI_ESCAPE:
+
+                return false;
+
             case WTUI_RETURN:
             case WTUI_SPACE:
-                return false;
+                return true;
 
             case WTUI_UP_ARROW:
                 if ((--selectedY) < 0) {

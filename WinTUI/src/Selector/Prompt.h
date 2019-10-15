@@ -7,13 +7,14 @@
 #pragma once
 
 #include "Base/Selector.h"
+#include "Base/Fixture.h"
 #include <iostream>
 #include <functional>
 #include <string>
 
 namespace WinTUI {
 
-    class Prompt : public Selector {
+    class Prompt : public Selector, public Fixture {
     public:
         Prompt() {}
 
@@ -35,28 +36,15 @@ namespace WinTUI {
         std::function<bool(const char* response)> m_IsValid = NULL;
 
         void PrintLabel(std::ostream& ostream) {
-            if (m_SelectedBefore) {
-                m_SelectedBefore(ostream);
-            }
-
+            BeforeSelected(ostream);
             ostream << m_Label;
-
-            if (m_SelectedAfter) {
-                m_SelectedAfter(ostream);
-            }
+            AfterSelected(ostream);
         }
 
-        void GetRepsonse(std::ostream& ostream) {
-            if (m_UnselectedBefore) {
-                m_UnselectedBefore(ostream);
-            }
-
+        void GetResponse(std::ostream& ostream) {
+            BeforeUnselected(ostream);
             std::getline(std::cin, m_Response, '\n');
-            //std::cin >> m_Response;
-
-            if (m_UnselectedAfter) {
-                m_UnselectedAfter(ostream);
-            }
+            AfterUnselected(ostream);
         }
 
     };
@@ -65,8 +53,10 @@ namespace WinTUI {
         bool isValid = false;
 
         while (!isValid) {
+            prompt.BeforeFixture(ostream);
             prompt.PrintLabel(ostream);
-            prompt.GetRepsonse(ostream);
+            prompt.GetResponse(ostream);
+            prompt.AfterFixture(ostream);
             isValid = true;
         }
 

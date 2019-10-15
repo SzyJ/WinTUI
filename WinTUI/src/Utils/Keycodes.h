@@ -13,4 +13,4 @@
 
 #define WTUI_RETURN 13
 #define WTUI_SPACE 32
-
+#define WTUI_ESCAPE 27

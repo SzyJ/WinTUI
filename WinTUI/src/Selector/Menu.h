@@ -6,6 +6,7 @@
 
 #pragma once
 #include "Base/Selector.h"
+#include "Base/Fixture.h"
 #include "Utils/Console.h"
 #include "Utils/Keyboard.h"
 #include "Utils/Keycodes.h"
@@ -13,7 +14,7 @@
 
 namespace WinTUI {
 
-    class Menu : public Selector {
+    class Menu : public Selector, public Fixture {
     public:
         Menu()
             : m_MenuOptions(nullptr), m_OptionCount(0), m_LastSelected(-1) {}
@@ -50,22 +51,14 @@ namespace WinTUI {
         inline void PrintOptions(std::ostream& ostream, int selectedIndex) const {
             for (int index = 0; index < m_OptionCount; ++index) {
                 if (index == selectedIndex) {
-                    if (m_SelectedBefore) {
-                        m_SelectedBefore(ostream);
-                    }
+                    BeforeSelected(ostream);
                     ostream << m_MenuOptions[index];
-                    if (m_SelectedAfter) {
-                        m_SelectedAfter(ostream);
-                    }
+                    AfterSelected(ostream);
                 }
                 else {
-                    if (m_UnselectedBefore) {
-                        m_UnselectedBefore(ostream);
-                    }
+                    BeforeUnselected(ostream);
                     ostream << m_MenuOptions[index];
-                    if (m_UnselectedAfter) {
-                        m_UnselectedAfter(ostream);
-                    }
+                    AfterUnselected(ostream);
                 }
 
                 ostream << std::endl;
@@ -111,9 +104,12 @@ namespace WinTUI {
 
         while (choosing) {
             Console::ClearScreen();
+            menu.BeforeFixture(ostream);
 
             menu.PrintOptions(ostream, selectedIndex);
             choosing = menu.GetKeyInput(selectedIndex);
+
+            menu.AfterFixture(ostream);
         }
 
         menu.m_LastSelected = selectedIndex;
