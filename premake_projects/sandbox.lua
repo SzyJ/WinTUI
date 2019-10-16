@@ -2,7 +2,7 @@
 -- 
 -- Project: WinTUI
 -- File: sandbox.lua
--- Date: 011/10/2019
+-- Date: 16/10/2019
 
 project "sandbox"
     location "%{wks.location}/sandbox"
@@ -34,13 +34,16 @@ project "sandbox"
     }
 
     filter "configurations:Debug"
+        buildoptions "/MTd"
         runtime "Debug"
         symbols "On"
 
     filter "configurations:Release"
+        buildoptions "/MT"
         runtime "Release"
         optimize "On"
 
     filter "configurations:Dist"
+        buildoptions "/MT"
         runtime "Release"
         optimize "On"

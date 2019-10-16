@@ -2,7 +2,7 @@
 -- 
 -- Project: WinTUI
 -- File: WinTUI.lua
--- Date: 11/10/2019
+-- Date: 16/10/2019
 
 project "WinTUI"
     location "%{wks.location}/WinTUI"
@@ -24,5 +24,17 @@ project "WinTUI"
         "%{prj.location}/src",
     }
 
-    filter {"system:windows", "configurations:Release"}
+    filter "configurations:Debug"
+        buildoptions "/MTd"
+        runtime "Debug"
+        symbols "On"
+
+    filter "configurations:Release"
         buildoptions "/MT"
+        runtime "Release"
+        optimize "On"
+
+    filter "configurations:Dist"
+        buildoptions "/MT"
+        runtime "Release"
+        optimize "On"
