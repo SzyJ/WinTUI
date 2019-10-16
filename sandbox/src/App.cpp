@@ -5,9 +5,9 @@
 // Date: 14/10/2019
 
 #include <iostream>
-#include <Selector/Menu.h>
-#include <Builder/Matrix.h>
-#include <Selector/Prompt.h>
+#include <Fixtures/Menu.h>
+#include <Fixtures/Matrix.h>
+#include <Fixtures/Prompt.h>
 #include "Utils/Keyboard.h"
 
 void ShowMenu();

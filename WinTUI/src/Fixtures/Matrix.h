@@ -38,7 +38,7 @@ namespace WinTUI {
         inline friend std::ostream& operator<<(std::ostream& ostream, Matrix<C>& matrix);
 
     private:
-        int m_Width, m_Height;
+        int m_Width, m_Height, m_CellWidth = 1;
         T* m_Matrix;
 
         void PrintCell(std::ostream& ostream, int xPos, int yPos) {
