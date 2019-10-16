@@ -23,11 +23,21 @@ namespace WinTUI {
 
         ~Prompt() {}
 
+        virtual void Show(std::ostream& ostream) override {
+            bool isValid = false;
+
+            while (!isValid) {
+                BeforeFixture(ostream);
+                PrintLabel(ostream);
+                GetResponse(ostream);
+                AfterFixture(ostream);
+                isValid = true;
+            }
+        }
+
         inline void SetCondition(const std::function<bool(const char* response)>& lambda) { m_IsValid = lambda; }
 
         inline const char* GetLastResponse() { return m_Response.c_str(); }
-
-        inline friend std::ostream& operator<<(std::ostream& ostream, Prompt& prompt);
 
     private:
         const char* m_Label;
@@ -48,19 +58,5 @@ namespace WinTUI {
         }
 
     };
-
-    std::ostream& operator<<(std::ostream& ostream, Prompt& prompt) {
-        bool isValid = false;
-
-        while (!isValid) {
-            prompt.BeforeFixture(ostream);
-            prompt.PrintLabel(ostream);
-            prompt.GetResponse(ostream);
-            prompt.AfterFixture(ostream);
-            isValid = true;
-        }
-
-        return ostream;
-    }
 
 }

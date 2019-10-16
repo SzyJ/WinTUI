@@ -17,6 +17,8 @@ namespace WinTUI {
         inline void SetFixtureBefore(const std::function<void(std::ostream&)>& lambda) { m_FixtureBefore = lambda; }
         inline void SetFixtureAfter(const std::function<void(std::ostream&)>& lambda) { m_FixtureAfter = lambda; }
 
+        virtual void Show(std::ostream& ostream) = 0;
+
     protected:
         inline void BeforeFixture(std::ostream& ostream) const {
             if (m_FixtureBefore) {

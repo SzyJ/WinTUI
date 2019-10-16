@@ -34,14 +34,29 @@ namespace WinTUI {
 
         ~Menu() {}
 
+        virtual void Show(std::ostream& ostream) override {
+            bool choosing = true;
+            int selectedIndex = 0;
+
+            while (choosing) {
+                Console::ClearScreen();
+                BeforeFixture(ostream);
+
+                PrintOptions(ostream, selectedIndex);
+                choosing = GetKeyInput(selectedIndex);
+
+                AfterFixture(ostream);
+            }
+
+            m_LastSelected = selectedIndex;
+        }
+
         void SetOptions(const char** menuOptionArray, int optionArraySize) {
             m_MenuOptions = menuOptionArray;
             m_OptionCount = optionArraySize;
         }
 
         inline int GetLastSelected() { return m_LastSelected; }
-
-        inline friend std::ostream& operator<<(std::ostream& ostream, Menu& menu);
 
     private:
         const char** m_MenuOptions;
@@ -97,24 +112,5 @@ namespace WinTUI {
         }
 
     };
-
-    std::ostream& operator<<(std::ostream& ostream, WinTUI::Menu& menu) {
-        bool choosing = true;
-        int selectedIndex = 0;
-
-        while (choosing) {
-            Console::ClearScreen();
-            menu.BeforeFixture(ostream);
-
-            menu.PrintOptions(ostream, selectedIndex);
-            choosing = menu.GetKeyInput(selectedIndex);
-
-            menu.AfterFixture(ostream);
-        }
-
-        menu.m_LastSelected = selectedIndex;
-
-        return ostream;
-    }
 
 }

@@ -9,13 +9,13 @@
 #include <Fixtures/Matrix.h>
 #include <Fixtures/Prompt.h>
 #include "Utils/Keyboard.h"
+#include <string>
 
 void ShowMenu();
 void BuildMatrix();
 void ShowPrompt();
 
 int main() {
-
     //std::cout << WinTUI::Keyboard::WaitForKey() << std::endl;
     //ShowMenu();
     //BuildMatrix();
@@ -49,12 +49,20 @@ void ShowMenu() {
         ostream << "   ";
         });
 
-    std::cout << menu;
+    menu.Show(std::cout);
     std::cout << "Chosen Item: " << array[menu.GetLastSelected()] << std::endl;
 }
 
 void BuildMatrix() {
     WinTUI::Matrix<int> matrix(5, 5);
+
+    matrix.SetFixtureBefore([](std::ostream& ostream) {
+        ostream << "1. Navigate to desired location with the arrow keys." << std::endl;
+        ostream << "2. Press ENTER/SPACE to modify selected cell." << std::endl;
+        ostream << "3. Enter the new desired value." << std::endl;
+        ostream << "4. Once you are happy with the matrix, press ESC to exit." << std::endl;
+        ostream << std::endl;
+    });
 
     matrix.SetSelectedBefore([](std::ostream& ostream) {
         WinTUI::Color::SetConsoleColor(WTUI_DARK_BLUE, WTUI_LIGHT_YELLOW);
@@ -63,7 +71,12 @@ void BuildMatrix() {
         WinTUI::Color::ResetConsoleColor();
         });
 
-    std::cout << matrix;
+    matrix.SetCStrConv([](const char* str) {
+        // TODO: Do some checks
+        return std::stoi(str);
+     });
+
+    matrix.Show(std::cout);
 }
 
 void ShowPrompt() {
@@ -77,8 +90,7 @@ void ShowPrompt() {
         ostream << ": ";
         });
 
-    std::cout << prompt;
-
+    prompt.Show(std::cout);
     std::cout << prompt.GetLastResponse();
 
 }

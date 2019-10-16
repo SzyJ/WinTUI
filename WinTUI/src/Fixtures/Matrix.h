@@ -6,9 +6,12 @@
 
 #pragma once
 #include "Base/Selector.h"
+#include "Base/Fixture.h"
 #include "Utils/Console.h"
 #include "Utils/Keyboard.h"
 #include "Utils/Keycodes.h"
+#include "Fixtures/Prompt.h"
+
 #include <cstring>
 
 #define WTUI_EMPTY_CHAR 254
@@ -22,7 +25,7 @@
 namespace WinTUI {
 
     template <typename T, typename = typename std::enable_if<std::is_arithmetic<T>::value, T>::type>
-    class Matrix : public Selector {
+    class Matrix : public Selector, public Fixture {
     public:
         Matrix();
 
@@ -34,12 +37,28 @@ namespace WinTUI {
 
         ~Matrix() {}
 
-        template <typename C, typename = typename std::enable_if<std::is_arithmetic<C>::value, C>::type>
-        inline friend std::ostream& operator<<(std::ostream& ostream, Matrix<C>& matrix);
+        virtual void Show(std::ostream& ostream) override {
+            bool choosing = true;
+            int selectedX = 0;
+            int selectedY = 0;
+
+            while (choosing) {
+                Console::ClearScreen();
+                BeforeFixture(ostream);
+
+                PrintMatrix(ostream, selectedX, selectedY);
+                choosing = GetKeyInput(ostream, selectedX, selectedY);
+
+                AfterFixture(ostream);
+            }
+        }
+
+        void SetCStrConv(std::function<T(const char*)> lambda) { m_ConvFromCStr = lambda; }
 
     private:
         int m_Width, m_Height, m_CellWidth = 1;
         T* m_Matrix;
+        std::function<T(const char*)> m_ConvFromCStr;
 
         void PrintCell(std::ostream& ostream, int xPos, int yPos) {
             T cell;
@@ -70,7 +89,26 @@ namespace WinTUI {
             }
         }
 
-        inline bool GetKeyInput(int& selectedX, int& selectedY) {
+        inline T GetUserInput(std::ostream& ostream) {
+            Prompt input("Enter a number");
+            input.SetSelectedBefore([](std::ostream& ostream) {
+                WinTUI::Color::SetConsoleColor(WTUI_DARK_BLUE, WTUI_LIGHT_YELLOW);
+            });
+            input.SetSelectedAfter([](std::ostream& ostream) {
+                Color::ResetConsoleColor();
+                ostream << ": ";
+            });
+
+            input.Show(ostream);
+
+            if (m_ConvFromCStr) {
+                return m_ConvFromCStr(input.GetLastResponse());
+            }
+
+            return (T) (input.GetLastResponse());
+        }
+
+        inline bool GetKeyInput(std::ostream& ostream, int& selectedX, int& selectedY) {
             switch (Keyboard::WaitForKey()) {
             case WTUI_ESCAPE:
 
@@ -78,6 +116,7 @@ namespace WinTUI {
 
             case WTUI_RETURN:
             case WTUI_SPACE:
+                m_Matrix[WTUI_POS(selectedX, selectedY)] = GetUserInput(ostream);
                 return true;
 
             case WTUI_UP_ARROW:
@@ -109,21 +148,5 @@ namespace WinTUI {
             }
         }
     };
-
-    template <typename C, typename = typename std::enable_if<std::is_arithmetic<C>::value, C>::type>
-    std::ostream& operator<<(std::ostream& ostream, WinTUI::Matrix<C>& matrix) {
-        bool choosing = true;
-        int selectedX = 0;
-        int selectedY = 0;
-
-        while (choosing) {
-            Console::ClearScreen();
-
-            matrix.PrintMatrix(ostream, selectedX, selectedY);
-            choosing = matrix.GetKeyInput(selectedX, selectedY);
-        }
-
-        return ostream;
-    }
 
 }
