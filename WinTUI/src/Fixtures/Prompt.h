@@ -28,14 +28,20 @@ namespace WinTUI {
 
             while (!isValid) {
                 BeforeFixture(ostream);
+
                 PrintLabel(ostream);
-                GetResponse(ostream);
+                isValid = GetResponse(ostream);
+                if (!isValid && m_Warning) {
+                    m_Warning(ostream);
+                }
+
                 AfterFixture(ostream);
-                isValid = true;
             }
         }
 
         inline void SetCondition(const std::function<bool(const char* response)>& lambda) { m_IsValid = lambda; }
+
+        inline void SetWarning(const std::function<void(std::ostream& warning)>& lambda) { m_Warning = lambda; }
 
         inline const char* GetLastResponse() { return m_Response.c_str(); }
 
@@ -44,6 +50,7 @@ namespace WinTUI {
         std::string m_Response;
 
         std::function<bool(const char* response)> m_IsValid = NULL;
+        std::function<void(std::ostream& warning)> m_Warning = NULL;
 
         void PrintLabel(std::ostream& ostream) {
             BeforeSelected(ostream);
@@ -51,12 +58,20 @@ namespace WinTUI {
             AfterSelected(ostream);
         }
 
-        void GetResponse(std::ostream& ostream) {
+        bool GetResponse(std::ostream& ostream) {
             BeforeUnselected(ostream);
-            std::getline(std::cin, m_Response, '\n');
-            AfterUnselected(ostream);
-        }
 
+            std::string responseBuffer;
+            std::getline(std::cin, responseBuffer, '\n');
+            bool success = (!m_IsValid || (m_IsValid(responseBuffer.c_str())));
+            if (success) {
+                m_Response = responseBuffer;
+            }
+
+            AfterUnselected(ostream);
+
+            return success;
+        }
     };
 
 }
