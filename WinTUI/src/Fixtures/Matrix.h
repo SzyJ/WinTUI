@@ -62,6 +62,8 @@ namespace WinTUI {
 
         void SetPrompt(Prompt* prompt) { m_Prompt = prompt; }
 
+        T* GetMatrixArray() { return m_Matrix; }
+
     private:
         const int m_Width, m_Height;
 
@@ -136,8 +138,10 @@ namespace WinTUI {
                 }
             }
 
-            m_CellWidth = std::to_string(cellVal).length();
-
+            int width;
+            if ((width = std::to_string(cellVal).length()) > m_CellWidth) {
+                m_CellWidth = width;
+            }
 
             return cellVal;
         }
