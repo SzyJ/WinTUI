@@ -2,7 +2,7 @@
 // 
 // Project: WinTUI
 // File: Matrix.h
-// Date: 16/10/2019
+// Date: 18/10/2019
 
 #pragma once
 #include "Base/Selector.h"
@@ -117,6 +117,10 @@ namespace WinTUI {
         }
 
         inline T GetUserInput(std::ostream& ostream) {
+            if (!m_ConvFromCStr) {
+                return NULL;
+            }
+
             if (!m_Prompt) {
                 CreateDefaultPrompt();
             }
@@ -127,19 +131,15 @@ namespace WinTUI {
             while (!validVal) {
                 m_Prompt->Show(ostream);
 
-                if (m_ConvFromCStr) {
-                    cellVal = m_ConvFromCStr(m_Prompt->GetLastResponse(), validVal);
-                    if (!validVal && m_Warning) {
-                        m_Warning(ostream);
-                    }
-                } else {
-                    validVal = true;
-                    cellVal = (T) m_Prompt->GetLastResponse();
+                cellVal = m_ConvFromCStr(m_Prompt->GetLastResponse(), validVal);
+                if (!validVal && m_Warning) {
+                    m_Warning(ostream);
                 }
+
             }
 
             int width;
-            if ((width = std::to_string(cellVal).length()) > m_CellWidth) {
+            if ((width = static_cast<int>(std::to_string(cellVal).length())) > m_CellWidth) {
                 m_CellWidth = width;
             }
 
