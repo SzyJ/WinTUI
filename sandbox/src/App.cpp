@@ -123,7 +123,7 @@ void BuildMatrix() {
         });
     numberInput->SetWarning([](std::ostream& ostream) {
         WinTUI::Color::SetConsoleColor(WTUI_WHITE, WTUI_RED);
-        ostream << "Only enter number characters" << std::endl;
+        ostream << "Only enter 2 or less number characters" << std::endl;
         });
 
     matrix.SetPrompt(numberInput);

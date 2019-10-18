@@ -8,7 +8,6 @@
 #include "Base/Selector.h"
 #include "Base/Fixture.h"
 #include "Utils/Console.h"
-#include "Utils/Color.h"
 #include "Utils/Keyboard.h"
 #include "Utils/Keycodes.h"
 #include "Fixtures/Prompt.h"
@@ -77,9 +76,7 @@ namespace WinTUI {
         std::function<void(std::ostream& warning)> m_Warning = NULL;
 
         void CreateDefaultPrompt() {
-            if (m_Prompt) {
-                delete m_Prompt;
-            }
+            delete m_Prompt;
 
             m_Prompt = new Prompt("Enter a value");
             m_Prompt->SetSelectedAfter([](std::ostream& ostream) {
@@ -138,6 +135,8 @@ namespace WinTUI {
                     cellVal = (T) m_Prompt->GetLastResponse();
                 }
             }
+
+            m_CellWidth = std::to_string(cellVal).length();
 
 
             return cellVal;
