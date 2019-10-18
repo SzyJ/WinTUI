@@ -2,7 +2,7 @@
 -- 
 -- Project: WinTUI
 -- File: premake5.lua
--- Date: 11/10/2019
+-- Date: 18/10/2019
 
 workspace "WinTUI"
     architecture "x64"
@@ -19,7 +19,7 @@ workspace "WinTUI"
 
     -- Dependencies
     extincludes = {}
-    extincludes["WinTUI"]  = "%{wks.location}/WinTUI/src"
+    extincludes["WinTUI"]  = "%{wks.location}/WinTUI/include"
 
     -- WinTUI project .lib --
     include "premake_projects/WinTUI.lua"

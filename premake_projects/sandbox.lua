@@ -2,7 +2,7 @@
 -- 
 -- Project: WinTUI
 -- File: sandbox.lua
--- Date: 16/10/2019
+-- Date: 18/10/2019
 
 project "sandbox"
     location "%{wks.location}/sandbox"
@@ -22,7 +22,7 @@ project "sandbox"
     }
 
     includedirs {
-        "%{wks.location}/WinTUI/src",
+        "%{wks.location}/WinTUI/include",
     }
 
     defines {

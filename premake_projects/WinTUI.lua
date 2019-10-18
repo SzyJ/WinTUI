@@ -2,7 +2,7 @@
 -- 
 -- Project: WinTUI
 -- File: WinTUI.lua
--- Date: 16/10/2019
+-- Date: 18/10/2019
 
 project "WinTUI"
     location "%{wks.location}/WinTUI"
@@ -16,12 +16,12 @@ project "WinTUI"
     objdir ("%{wks.location}/bin-int/" .. outputdir .. "/%{prj.name}")
 
     files {
-        "%{prj.location}/src/**.h",
-        "%{prj.location}/src/**.cpp"
+        "%{prj.location}/include/**.h",
+        "%{prj.location}/build/**.cpp"
     }
 
     includedirs {
-        "%{prj.location}/src",
+        "%{prj.location}/include",
     }
 
     filter "configurations:Debug"

@@ -2,7 +2,7 @@
 // 
 // Project: sandbox
 // File: App.cpp
-// Date: 14/10/2019
+// Date: 18/10/2019
 
 #include <iostream>
 #include <Fixtures/Menu.h>
@@ -27,9 +27,9 @@ int main() {
 
 void ShowMenu() {
     const char* array[] = {
-    "First entry",
-    "Second entry",
-    "Third entry"
+        "First entry",
+        "Second entry",
+        "Third entry"
     };
 
     WinTUI::Menu menu(array, 3);
@@ -38,17 +38,17 @@ void ShowMenu() {
         ostream << "-> ";
 
         WinTUI::Color::SetConsoleColor(WTUI_DARK_BLUE, WTUI_LIGHT_YELLOW);
-        });
+    });
     menu.SetSelectedAfter([](std::ostream& ostream) {
         WinTUI::Color::ResetConsoleColor();
         ostream << " <-";
-        });
+    });
     menu.SetUnselectedBefore([](std::ostream& ostream) {
         ostream << "   ";
-        });
+    });
     menu.SetUnselectedAfter([](std::ostream& ostream) {
         ostream << "   ";
-        });
+    });
 
     menu.Show(std::cout);
     std::cout << "Chosen Item: " << array[menu.GetLastSelected()] << std::endl;
@@ -80,7 +80,7 @@ void BuildMatrix() {
     matrix.SetCStrConv([maxValue, minValue](const char* str, bool& success) {
         try {
             auto value = std::stoi(str);
-             success = value >= minValue && value <= maxValue;
+            success = value >= minValue && value <= maxValue;
             return value;
         } catch (const std::invalid_argument) {
             success = false;
@@ -92,12 +92,12 @@ void BuildMatrix() {
             success = false;
             return -3;
         }
-     });
+    });
 
     matrix.SetWarning([](std::ostream& ostream) {
         WinTUI::Color::SetConsoleColor(WTUI_WHITE, WTUI_RED);
         ostream << "Enter a positive number between 0 and 20" << std::endl;
-        });
+    });
 
     WinTUI::Prompt* numberInput = new WinTUI::Prompt("Enter a number between 0 and 20");
 
@@ -105,11 +105,11 @@ void BuildMatrix() {
     numberInput->SetSelectedAfter([](std::ostream& ostream) {
         WinTUI::Color::ResetConsoleColor();
         ostream << ": ";
-        });
+    });
     numberInput->SetCondition([](const char* string) {
         char thisChar;
 
-         for (int cIndex = 0; (thisChar = string[cIndex]) != '\0'; ++cIndex) {
+        for (int cIndex = 0; (thisChar = string[cIndex]) != '\0'; ++cIndex) {
             if (!std::isdigit(thisChar)) {
                 return false;
             }
@@ -120,11 +120,11 @@ void BuildMatrix() {
         }
 
         return true;
-        });
+    });
     numberInput->SetWarning([](std::ostream& ostream) {
         WinTUI::Color::SetConsoleColor(WTUI_WHITE, WTUI_RED);
         ostream << "Only enter 2 or less number characters" << std::endl;
-        });
+    });
 
     matrix.SetPrompt(numberInput);
 
@@ -136,19 +136,19 @@ void ShowPrompt() {
 
     prompt.SetSelectedBefore([](std::ostream& ostream) {
         WinTUI::Color::SetConsoleColor(WTUI_LIGHT_GREEN, WTUI_DARK_GRAY);
-        });
+    });
     prompt.SetSelectedAfter([](std::ostream& ostream) {
         WinTUI::Color::ResetConsoleColor();
         ostream << ": ";
-        });
+    });
 
     prompt.SetCondition([](const char* str) {
         return str[0] == 'a';
-        });
+    });
     prompt.SetWarning([](std::ostream& ostream) {
         WinTUI::Color::SetConsoleColor(WTUI_WHITE, WTUI_RED);
         ostream << "Please enter a value starting with 'a'" << std::endl;
-        });
+    });
 
     prompt.Show(std::cout);
     std::cout << prompt.GetLastResponse();
