@@ -28,7 +28,7 @@ namespace WinTUI {
         }
 
         ~Menu() {
-            CleanUpMenuOptionArray();
+            delete[] m_MenuOptions;
         }
 
         virtual void Show(std::ostream& ostream) override {
@@ -49,7 +49,7 @@ namespace WinTUI {
         }
 
         void SetOptions(const char** menuOptionArray, const int optionArraySize) {
-            CleanUpMenuOptionArray();
+            delete[] m_MenuOptions;
             InitMenuOptionArray(menuOptionArray, optionArraySize);
         }
 
@@ -67,14 +67,6 @@ namespace WinTUI {
             for (int index = 0; index < optionArraySize; ++index) {
                 m_MenuOptions[index] = std::string(menuOptionArray[index]);
             }
-        }
-
-        inline void CleanUpMenuOptionArray() const {
-            if (!m_MenuOptions) {
-                return;
-            }
-
-            delete[] m_MenuOptions;
         }
 
         inline void PrintOptions(std::ostream& ostream, int selectedIndex) const {
