@@ -8,7 +8,7 @@
 #include <Fixtures/Menu.h>
 #include <Fixtures/Matrix.h>
 #include <Fixtures/Prompt.h>
-#include "Utils/Keyboard.h"
+#include "Utils/Color.h"
 #include <string>
 #include <cctype>
 
@@ -18,22 +18,24 @@ void ShowPrompt();
 
 int main() {
     //std::cout << WinTUI::Keyboard::WaitForKey() << std::endl;
-    //ShowMenu();
-    BuildMatrix();
+    ShowMenu();
+    //BuildMatrix();
     //ShowPrompt();
 
     return 0;
 }
 
 void ShowMenu() {
-    const char* array[] = {
-        "First entry",
-        "Second entry",
-        "Third entry"
-    };
 
-    WinTUI::Menu menu(array, 3);
-
+    WinTUI::Menu menu;
+    {
+        const char* array[] = {
+            "First entry",
+            "Second entry",
+            "Third entry"
+        };
+        menu.SetOptions(array, 3);
+    }
     menu.SetSelectedBefore([](std::ostream& ostream) {
         ostream << "-> ";
 
@@ -51,7 +53,7 @@ void ShowMenu() {
     });
 
     menu.Show(std::cout);
-    std::cout << "Chosen Item: " << array[menu.GetLastSelected()] << std::endl;
+    //std::cout << "Chosen Item: " << array[menu.GetLastSelected()] << std::endl;
 }
 
 void BuildMatrix() {

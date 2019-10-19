@@ -10,29 +10,26 @@
 #include "Utils/Console.h"
 #include "Utils/Keyboard.h"
 #include "Utils/Keycodes.h"
-#include "Utils/Color.h"
+
+#include <string>
 
 namespace WinTUI {
 
     class Menu : public Selector, public Fixture {
     public:
         Menu()
-            : m_MenuOptions(nullptr), m_OptionCount(0), m_LastSelected(-1) {}
-
-        Menu(const char** menuOptionArray, int optionArraySize)
-            : m_MenuOptions(menuOptionArray), m_OptionCount(optionArraySize), m_LastSelected(-1) {}
-
-        Menu(const Menu& copy) {
-            m_LastSelected = copy.m_LastSelected;
-            m_OptionCount = copy.m_OptionCount;
-            m_MenuOptions = new const char*[m_OptionCount];
-
-            for (int index = 0; index < copy.m_OptionCount; ++index) {
-                m_MenuOptions[index] = copy.m_MenuOptions[index];
-            }
+            :m_LastSelected(-1) {
+            
         }
 
-        ~Menu() {}
+        Menu(const char** menuOptionArray, const int optionArraySize)
+            :m_LastSelected(-1) {
+            InitMenuOptionArray(menuOptionArray, optionArraySize);
+        }
+
+        ~Menu() {
+            CleanUpMenuOptionArray();
+        }
 
         virtual void Show(std::ostream& ostream) override {
             bool choosing = true;
@@ -51,17 +48,34 @@ namespace WinTUI {
             m_LastSelected = selectedIndex;
         }
 
-        void SetOptions(const char** menuOptionArray, int optionArraySize) {
-            m_MenuOptions = menuOptionArray;
-            m_OptionCount = optionArraySize;
+        void SetOptions(const char** menuOptionArray, const int optionArraySize) {
+            CleanUpMenuOptionArray();
+            InitMenuOptionArray(menuOptionArray, optionArraySize);
         }
 
         inline int GetLastSelected() { return m_LastSelected; }
 
     private:
-        const char** m_MenuOptions;
+        std::string* m_MenuOptions = nullptr;
         int m_OptionCount;
         int m_LastSelected;
+
+        inline void InitMenuOptionArray(const char** menuOptionArray, const int optionArraySize) {
+            m_OptionCount = optionArraySize;
+            m_MenuOptions = new std::string[optionArraySize];
+
+            for (int index = 0; index < optionArraySize; ++index) {
+                m_MenuOptions[index] = std::string(menuOptionArray[index]);
+            }
+        }
+
+        inline void CleanUpMenuOptionArray() const {
+            if (!m_MenuOptions) {
+                return;
+            }
+
+            delete[] m_MenuOptions;
+        }
 
         inline void PrintOptions(std::ostream& ostream, int selectedIndex) const {
             for (int index = 0; index < m_OptionCount; ++index) {
@@ -69,8 +83,7 @@ namespace WinTUI {
                     BeforeSelected(ostream);
                     ostream << m_MenuOptions[index];
                     AfterSelected(ostream);
-                }
-                else {
+                } else {
                     BeforeUnselected(ostream);
                     ostream << m_MenuOptions[index];
                     AfterUnselected(ostream);
