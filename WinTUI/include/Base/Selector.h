@@ -5,8 +5,7 @@
 // Date: 14/10/2019
 
 #pragma once
-#include <ostream>
-#include <functional>
+#include "Base.h"
 
 namespace WinTUI {
 
@@ -14,10 +13,10 @@ namespace WinTUI {
     public:
         virtual ~Selector() = default;
 
-        inline void SetSelectedBefore(const std::function<void(std::ostream&)>& lambda) { m_SelectedBefore = lambda; }
-        inline void SetSelectedAfter(const std::function<void(std::ostream&)>& lambda) { m_SelectedAfter = lambda; }
-        inline void SetUnselectedBefore(const std::function<void(std::ostream&)>& lambda) { m_UnselectedBefore = lambda; }
-        inline void SetUnselectedAfter(const std::function<void(std::ostream&)>& lambda) { m_UnselectedAfter = lambda; }
+        inline void SetSelectedBefore(const ConfigLambda& lambda) { m_SelectedBefore = lambda; }
+        inline void SetSelectedAfter(const ConfigLambda& lambda) { m_SelectedAfter = lambda; }
+        inline void SetUnselectedBefore(const ConfigLambda& lambda) { m_UnselectedBefore = lambda; }
+        inline void SetUnselectedAfter(const ConfigLambda& lambda) { m_UnselectedAfter = lambda; }
 
     protected:
         inline void BeforeSelected(std::ostream& ostream) const {
@@ -45,10 +44,10 @@ namespace WinTUI {
         }
 
     private:
-        std::function<void(std::ostream& ostream)> m_SelectedBefore = NULL;
-        std::function<void(std::ostream& ostream)> m_SelectedAfter = NULL;
-        std::function<void(std::ostream& ostream)> m_UnselectedBefore = NULL;
-        std::function<void(std::ostream& ostream)> m_UnselectedAfter = NULL;
+        ConfigLambda m_SelectedBefore = NULL;
+        ConfigLambda m_SelectedAfter = NULL;
+        ConfigLambda m_UnselectedBefore = NULL;
+        ConfigLambda m_UnselectedAfter = NULL;
 
     };
 

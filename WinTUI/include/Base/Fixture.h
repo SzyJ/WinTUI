@@ -5,8 +5,7 @@
 // Date: 15/10/2019
 
 #pragma once
-#include <ostream>
-#include <functional>
+#include "Base.h"
 
 namespace WinTUI {
 
@@ -14,8 +13,8 @@ namespace WinTUI {
     public:
         virtual ~Fixture() = default;
 
-        inline void SetFixtureBefore(const std::function<void(std::ostream&)>& lambda) { m_FixtureBefore = lambda; }
-        inline void SetFixtureAfter(const std::function<void(std::ostream&)>& lambda) { m_FixtureAfter = lambda; }
+        inline void SetFixtureBefore(const ConfigLambda& lambda) { m_FixtureBefore = lambda; }
+        inline void SetFixtureAfter(const ConfigLambda& lambda) { m_FixtureAfter = lambda; }
 
         virtual void Show(std::ostream& ostream) = 0;
 
@@ -33,8 +32,8 @@ namespace WinTUI {
         }
 
     private:
-        std::function<void(std::ostream& ostream)> m_FixtureBefore = NULL;
-        std::function<void(std::ostream& ostream)> m_FixtureAfter = NULL;
+        ConfigLambda m_FixtureBefore = NULL;
+        ConfigLambda m_FixtureAfter = NULL;
 
     };
 
