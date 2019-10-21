@@ -50,9 +50,10 @@ namespace WinTUI {
                 BeforeFixture(ostream);
 
                 PrintMatrix(ostream, selectedX, selectedY);
-                choosing = GetKeyInput(ostream, selectedX, selectedY);
 
                 AfterFixture(ostream);
+
+                choosing = GetKeyInput(ostream, selectedX, selectedY);
             }
         }
 

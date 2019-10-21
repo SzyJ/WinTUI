@@ -40,9 +40,10 @@ namespace WinTUI {
                 BeforeFixture(ostream);
 
                 PrintOptions(ostream, selectedIndex);
-                choosing = GetKeyInput(selectedIndex);
 
                 AfterFixture(ostream);
+
+                choosing = GetKeyInput(selectedIndex);
             }
 
             m_LastSelected = selectedIndex;
