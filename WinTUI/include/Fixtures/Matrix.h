@@ -15,7 +15,7 @@
 #include <iomanip>
 #include <cstring>
 
-#define WTUI_EMPTY_CHAR 254
+#define WTUI_EMPTY_CHAR ((char) 254)
 
 #define WTUI_ROW_SEPERATOR "\n"
 #define WTUI_COLUMN_SEPERATOR " "
@@ -36,9 +36,7 @@ namespace WinTUI {
             std::memset(m_Matrix, 0, sizeof(T) * m_Width * m_Height);
         }
 
-        ~Matrix() {
-            delete m_Prompt;
-        }
+        ~Matrix() = default;
 
         virtual void Show(std::ostream& ostream) override {
             bool choosing = true;
@@ -90,10 +88,10 @@ namespace WinTUI {
         void PrintCell(std::ostream& ostream, int xPos, int yPos) {
             T cell;
             cell = m_Matrix[WTUI_POS(xPos, yPos)];
-            if (cell) {
-                ostream << std::setw(m_CellWidth) << cell;
+            if (cell < 0) {
+                ostream << std::setw(m_CellWidth) << WTUI_EMPTY_CHAR;
             } else {
-                ostream << std::setw(m_CellWidth) << (char) (WTUI_EMPTY_CHAR);
+                ostream << std::setw(m_CellWidth) << cell;
             }
         }
 
